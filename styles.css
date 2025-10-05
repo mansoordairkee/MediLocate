@@ -1,0 +1,686 @@
+/* MediLocate Styles - Medical Emergency Theme */
+
+:root {
+    /* Colors */
+    --primary: #1E7FFF;
+    --primary-hover: #1E7FFF;
+    --primary-light: #4A9AFF;
+    
+    --emergency: #DC2626;
+    --emergency-hover: #B91C1C;
+    --emergency-light: #F87171;
+    
+    --success: #16A34A;
+    --success-hover: #15803D;
+    
+    --purple: #7C3AED;
+    --orange: #EA580C;
+    
+    --background: #FAFBFC;
+    --foreground: #1F2937;
+    --muted: #F3F4F6;
+    --muted-foreground: #6B7280;
+    --border: #E5E7EB;
+    --card: #FFFFFF;
+    
+    /* Shadows */
+    --shadow-card: 0 2px 10px -2px rgba(31, 41, 55, 0.1);
+    --shadow-medical: 0 4px 20px -4px rgba(30, 127, 255, 0.15);
+    --shadow-emergency: 0 4px 20px -4px rgba(220, 38, 38, 0.25);
+    
+    /* Transitions */
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Spacing */
+    --radius: 8px;
+}
+
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(180deg, var(--background), var(--muted));
+    color: var(--foreground);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+/* Layout */
+.container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* Header */
+.header {
+    background: var(--card);
+    box-shadow: var(--shadow-medical);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+}
+
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.logo-icon {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    padding: 8px;
+    border-radius: var(--radius);
+    color: white;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-text h1 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--foreground);
+    margin: 0;
+}
+
+.logo-text p {
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+    margin: 0;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* Main */
+.main {
+    padding: 1.5rem 0;
+}
+
+/* Cards */
+.card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+    padding: 1rem;
+    border: 1px solid var(--border);
+    transition: var(--transition);
+}
+
+.card:hover {
+    box-shadow: var(--shadow-medical);
+}
+
+/* Buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius);
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+    box-shadow: var(--shadow-medical);
+}
+
+.btn-primary:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+}
+
+.btn-emergency {
+    background: linear-gradient(135deg, var(--emergency), var(--emergency-light));
+    color: white;
+    box-shadow: var(--shadow-emergency);
+}
+
+.btn-emergency:hover {
+    background: var(--emergency-hover);
+    transform: translateY(-1px);
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--foreground);
+    border: 1px solid var(--border);
+}
+
+.btn-outline:hover {
+    background: var(--muted);
+    box-shadow: var(--shadow-card);
+}
+
+.btn.full-width {
+    width: 100%;
+}
+
+/* Badges */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.badge.secondary {
+    background: var(--muted);
+    color: var(--foreground);
+}
+
+.badge.secure {
+    background: rgba(22, 163, 74, 0.1);
+    color: var(--success);
+    border: 1px solid rgba(22, 163, 74, 0.2);
+}
+
+/* Search */
+.search-card {
+    margin-bottom: 1.5rem;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.search-input-wrapper {
+    flex: 1;
+    position: relative;
+}
+
+.search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted-foreground);
+    width: 16px;
+    height: 16px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 0.875rem;
+    transition: var(--transition);
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(30, 127, 255, 0.1);
+}
+
+/* Emergency Alert */
+.emergency-alert {
+    margin-bottom: 1.5rem;
+    border-left: 4px solid var(--emergency);
+    background: rgba(220, 38, 38, 0.05);
+    box-shadow: var(--shadow-emergency);
+}
+
+.alert-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+
+.alert-icon {
+    color: var(--emergency);
+    width: 20px;
+    height: 20px;
+    margin-top: 2px;
+}
+
+.alert-text h3 {
+    font-weight: 600;
+    color: var(--emergency);
+    margin-bottom: 0.25rem;
+}
+
+.alert-text p {
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+    margin: 0;
+}
+
+/* Dashboard Grid */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 1024px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Section Titles */
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.section-title i {
+    color: var(--primary);
+    width: 20px;
+    height: 20px;
+}
+
+/* Service Filters */
+.service-filters {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.service-filter-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--card);
+    cursor: pointer;
+    transition: var(--transition);
+    text-align: left;
+}
+
+.service-filter-btn:hover {
+    box-shadow: var(--shadow-card);
+    border-color: rgba(30, 127, 255, 0.5);
+}
+
+.service-filter-btn.active {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white;
+    box-shadow: var(--shadow-medical);
+}
+
+.service-icon {
+    padding: 0.5rem;
+    border-radius: 6px;
+    color: white;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.service-icon.hospital { background: var(--emergency); }
+.service-icon.pharmacy { background: var(--success); }
+.service-icon.lab { background: var(--purple); }
+.service-icon.blood_bank { background: var(--emergency); }
+.service-icon.veterinary { background: var(--orange); }
+.service-icon.all { background: var(--primary); }
+
+.service-info h4 {
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.service-info p {
+    font-size: 0.75rem;
+    opacity: 0.8;
+    margin: 0;
+}
+
+/* Quick Access */
+.quick-access {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Location Status */
+.location-status {
+    background: linear-gradient(180deg, var(--background), var(--muted));
+}
+
+.status-content {
+    text-align: center;
+}
+
+.status-text {
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+    margin-top: 0.5rem;
+    margin-bottom: 0;
+}
+
+/* Map */
+.map-card {
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+}
+
+.map-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.map-container {
+    flex: 1;
+    position: relative;
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+.map-token-input {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--card);
+    z-index: 10;
+}
+
+.token-input-content {
+    text-align: center;
+    max-width: 400px;
+    padding: 2rem;
+}
+
+.token-icon {
+    width: 48px;
+    height: 48px;
+    color: var(--primary);
+    margin: 0 auto 1rem;
+}
+
+.token-input-content h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.token-input-content p {
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+    margin-bottom: 1rem;
+}
+
+.token-input-content a {
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.token-input-content a:hover {
+    text-decoration: underline;
+}
+
+.token-input-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.token-input-field {
+    padding: 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 0.875rem;
+}
+
+.token-input-field:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(30, 127, 255, 0.1);
+}
+
+.map {
+    width: 100%;
+    height: 100%;
+    border-radius: var(--radius);
+}
+
+.map.hidden {
+    display: none;
+}
+
+/* Service List */
+.service-list-card {
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+}
+
+.service-list-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.service-list-header h2 {
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.service-list {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.service-item {
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--primary);
+    border-radius: var(--radius);
+    padding: 1rem;
+    transition: var(--transition);
+}
+
+.service-item:hover {
+    box-shadow: var(--shadow-medical);
+}
+
+.service-item-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+}
+
+.service-item-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    flex: 1;
+}
+
+.service-item-icon {
+    padding: 0.5rem;
+    border-radius: 6px;
+    background: var(--muted);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.service-item-details h3 {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.service-item-details .type {
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+    margin-bottom: 0.25rem;
+}
+
+.service-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+}
+
+.service-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.service-item-address {
+    font-size: 0.875rem;
+    margin-bottom: 0.75rem;
+}
+
+.service-item-address .address-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--muted-foreground);
+    margin-bottom: 0.25rem;
+}
+
+.service-item-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.service-item-actions .btn {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+}
+
+/* Stats */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.stat-card {
+    text-align: center;
+    transition: var(--transition);
+}
+
+.stat-card:hover {
+    box-shadow: var(--shadow-medical);
+    transform: translateY(-2px);
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.stat-number.primary { color: var(--primary); }
+.stat-number.success { color: var(--success); }
+.stat-number.emergency { color: var(--emergency); }
+.stat-number.purple { color: var(--purple); }
+
+.stat-label {
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+}
+
+/* Status badges */
+.status-open {
+    background: rgba(22, 163, 74, 0.1);
+    color: var(--success);
+    border: 1px solid rgba(22, 163, 74, 0.2);
+}
+
+.status-closed {
+    background: var(--muted);
+    color: var(--muted-foreground);
+}
+
+/* Icon colors */
+.icon-hospital { color: var(--emergency); }
+.icon-pharmacy { color: var(--success); }
+.icon-lab { color: var(--purple); }
+.icon-blood_bank { color: var(--emergency); }
+.icon-veterinary { color: var(--orange); }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        height: auto;
+        padding: 1rem 0;
+        gap: 1rem;
+    }
+    
+    .search-container {
+        flex-direction: column;
+    }
+    
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .service-item-actions {
+        flex-direction: column;
+    }
+}

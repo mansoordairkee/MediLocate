@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediLocate - Emergency Services Finder</title>
+    <meta name="description" content="Find nearby hospitals, pharmacies, labs, blood banks, and veterinary clinics in emergency situations. Real-time location tracking with interactive maps.">
+    <meta name="keywords" content="emergency, medical services, hospitals, pharmacies, healthcare, emergency finder">
+    
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo-icon">
+                        <i data-lucide="heart"></i>
+                    </div>
+                    <div class="logo-text">
+                        <h1>MediLocate</h1>
+                        <p>Emergency Services Finder</p>
+                    </div>
+                </div>
+                
+                <div class="header-actions">
+                    <div class="badge secure">
+                        <i data-lucide="shield"></i>
+                        Secure
+                    </div>
+                    <button class="btn btn-emergency" onclick="callEmergency()">
+                        <i data-lucide="phone"></i>
+                        Emergency: 100
+                    </button>   
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Search Bar -->
+            <div class="card search-card">
+                <div class="search-container">
+                    <div class="search-input-wrapper">
+                        <i data-lucide="search" class="search-icon"></i>
+                        <input 
+                            type="text" 
+                            id="searchInput"
+                            placeholder="Search for specific services, hospitals, or locations..."
+                            class="search-input"
+                        >
+                    </div>
+                    <button class="btn btn-primary" onclick="findNearby()">
+                        <i data-lucide="navigation"></i>
+                        Find Nearby
+                    </button>
+                </div>
+            </div>
+
+            <!-- Emergency Alert -->
+            <div class="card emergency-alert">
+                <div class="alert-content">
+                    <i data-lucide="alert-triangle" class="alert-icon"></i>
+                    <div class="alert-text">
+                        <h3>Emergency Mode</h3>
+                        <p>In a life-threatening emergency, call 100 immediately. This tool helps locate nearby services for urgent but non-emergency care.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Grid -->
+            <div class="dashboard-grid">
+                <div class="sidebar-left">
+                    <div class="card">
+                        <h2 class="section-title">
+                            <i data-lucide="map-pin"></i>
+                            Service Types
+                        </h2>
+                        <div class="service-filters" id="serviceFilters">
+                            <!-- In JS -->
+                        </div>
+                    </div>
+
+
+                    <!-- Location Status -->
+                    <div class="card location-status">
+                        <div class="status-content">
+                            <div class="badge secondary">
+                                <i data-lucide="map-pin"></i>
+                                Location Enabled
+                            </div>
+                            <p class="status-text">Showing services within 10 miles</p>
+                        </div>
+                    </div>
+                </div>
+
+<!-- Google Map Embed Section -->
+<div class="map-section" style="text-align:center; margin: 0 auto; padding: 0;">
+  <h3 style="font-weight:600; margin-bottom:10px;">Nearby Medical Services</h3>
+
+  <!-- Responsive Map Container -->
+  <div style="
+      position: relative;
+      width: 100%;
+      max-width: 1000px;
+      height: 450px;
+      margin: 0 auto;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+    
+    <iframe 
+    src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d227749.2458835761!2d75.79055692448067!3d26.885019540437465!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1shospital!5e0!3m2!1sen!2sin!4v1759696975352!5m2!1sen!2sin"
+    id="googleMap"
+    width="100%"
+    height="100%"
+    style="border:0;" 
+    allowfullscreen="" 
+    loading="lazy" 
+    referrerpolicy="no-referrer-when-downgrade">
+</iframe>
+  </div>
+</div>
+
+                <!--Service List -->
+                <div class="sidebar-right">
+                    <div class="card service-list-card">
+                        <div class="service-list-header">
+                            <h2>Nearby Services</h2>
+                            <div class="badge secondary" id="serviceCount">0 found</div>
+                        </div>
+                        <div class="service-list" id="serviceList">
+                            <!-- In JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Stats -->
+            <div class="stats-grid">
+                <div class="card stat-card">
+                    <div class="stat-number primary">150+</div>
+                    <div class="stat-label">Medical Facilities</div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-number success">24/7</div>
+                    <div class="stat-label">Emergency Access</div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-number emergency">&lt; 2min</div>
+                    <div class="stat-label">Average Response</div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-number purple">10mi</div>
+                    <div class="stat-label">Search Radius</div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Custom JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
