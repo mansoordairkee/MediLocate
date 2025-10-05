@@ -8,7 +8,7 @@ It uses **Google Maps integration** to display live locations and directions bas
 
 ## 🚀 Features
 
-- 🌍 **Live Google Map Integration** – Displays real map data (no mock locations)
+- 🌍 **Live Google Map Integration** – Displays real map data 
 - 📍 **Nearby Healthcare Services** – Automatically shows hospitals, pharmacies, labs, blood banks, and vet clinics around Jaipur
 - 📡 **User Location Access** – Detects user’s current position for accurate nearby results
 - 🧭 **Interactive Map Markers** – Clickable markers with service names and directions
