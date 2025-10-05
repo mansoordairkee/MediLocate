@@ -22,7 +22,7 @@ It uses **Google Maps integration** to display live locations and directions bas
 | Technology | Purpose |
 |-------------|----------|
 | **HTML5** | Structure and layout |
-| **CSS3 / Tailwind (optional)** | Styling and responsiveness |
+| **CSS3 | Styling and responsiveness |
 | **JavaScript (ES6)** | Map integration and geolocation logic |
 | **Google Maps Embed API** | Displays live map |
 
