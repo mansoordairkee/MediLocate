@@ -3,6 +3,9 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const JWT_SECRET = "your_secret_key";
 
+// This code will help the user to register and login, and view their profile
+
+// Firstly the User Registration
 exports.registerUser = (req, res) => {
   const { name, email, password } = req.body;
   if (!name || !email || !password)
@@ -20,6 +23,7 @@ exports.registerUser = (req, res) => {
   );
 };
 
+// Secondly the User Login
 exports.loginUser = (req, res) => {
   const { email, password } = req.body;
 
@@ -37,6 +41,7 @@ exports.loginUser = (req, res) => {
   });
 };
 
+// Lastly the User Profile
 exports.getProfile = (req, res) => {
   db.query(
     "SELECT id, name, email FROM users WHERE id = ?",
