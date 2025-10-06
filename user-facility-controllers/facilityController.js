@@ -1,6 +1,6 @@
 const db = require("../database-config/db");
 
-// Add Facility
+// A user can add a facility, view all facilities, and find nearest facilities based on location
 exports.addFacility = (req, res) => {
   const { name, type, latitude, longitude, contact } = req.body;
   if (!name || !type || !latitude || !longitude || !contact)
@@ -16,7 +16,7 @@ exports.addFacility = (req, res) => {
   );
 };
 
-// Get All Facilities
+// A user can view all facilities or filter by type
 exports.getFacilities = (req, res) => {
   const { type } = req.query;
   let sql = "SELECT * FROM facilities";
@@ -33,7 +33,7 @@ exports.getFacilities = (req, res) => {
   });
 };
 
-// Get Nearest Facilities
+// A user can get nearest facilities based on their location
 exports.getNearestFacilities = (req, res) => {
   const { latitude, longitude, type } = req.query;
   if (!latitude || !longitude)
