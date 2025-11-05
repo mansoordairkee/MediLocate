@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
+// User Signup
 exports.signUp = async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -24,6 +25,7 @@ exports.signUp = async (req, res) => {
   }
 };
 
+// User Login
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -42,4 +44,27 @@ exports.login = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: 'Internal server error' });
   } 
+};
+
+//Admin Login
+exports.adminLogin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const adminEmail = process.env.ADMIN_EMAIL;
+    const adminPassword = process.env.ADMIN_PASSWORD;
+
+    if (email !== adminEmail || password !== adminPassword) {
+      return res.status(400).json({ error: 'Invalid admin credentials' });
+    }
+
+    const token = jwt.sign(
+      {role: 'admin', email: adminEmail},
+      process.env.JWT_SECRET,
+      { expiresIn: '1d' }
+    );  
+
+    res.json({ message: 'Admin Login Successful', token });
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
 };
