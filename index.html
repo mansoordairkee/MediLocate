@@ -24,9 +24,9 @@
                 </div>
                 
                 <div class="header-actions">
-                    <button class="btn btn-location" id="locationToggle" data-testid="button-location-toggle">
+                    <button class="btn btn-location disabled" id="locationToggle" data-testid="button-location-toggle">
                         <i data-lucide="map-pin"></i>
-                        <span class="location-text">Location Enabled</span>
+                        <span class="location-text">Location Disabled</span>
                     </button>
                     <div class="badge badge-secure">
                         <i data-lucide="shield"></i>
@@ -151,6 +151,12 @@
             </div>
         </div>
     </main>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <div class="toast-title" id="toast-title"></div>
+        <div class="toast-description" id="toast-description"></div>
+    </div>
 
     <script src="script.js"></script>
     <script>
