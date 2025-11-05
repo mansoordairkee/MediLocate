@@ -57,7 +57,36 @@
         function signOut() {
             window.location.href = 'auth.html';
         }
+        
+        const token = localStorage.getItem('token');
+        const adminEmail = localStorage.getItem('adminEmail');
+        const adminName = localStorage.getItem('adminName');
 
+        document.getElementById('adminEmail').textContent = adminEmail || 'Unknown';
+        document.getElementById('adminName').textContent = adminName || 'Admin';
+
+        async function fetchDashboardStats() {
+            try {
+                const res = await fetch('http://localhost:3000/api/admin/stats', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                });
+                if (!res.ok) {
+                    throw new Error('Failed to fetch stats');
+                }
+                const data = await res.json();
+
+                document.getElementById('userCount').textContent = data.totalUsers || 0;
+                document.getElementById('serviceCount').textContent = data.totalServices || 0;
+                document.getElementById('sessionCount').textContent = data.activeSessions || 0;
+                document.getElementById('systemStatus').textContent = 'All systems operational';
+            } catch (err) {
+                console.error(err);
+                document.getElementById('systemStatus').textContent = 'Error Loading data';
+            }
+        }
+        fetchDashboardStats();
         // Initialize Lucide icons
         lucide.createIcons();
     </script>
