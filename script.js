@@ -387,8 +387,8 @@ function getServiceIcon(serviceType) {
 
 // Actions
 function callEmergency() {
-    if (confirm('This will attempt to call emergency services (100). Continue?')) {
-        window.open('tel:100');
+    if (confirm('This will attempt to call emergency services (105). Continue?')) {
+        window.open('tel:105');
     }
 }
 
@@ -412,3 +412,4 @@ function logout() {
     console.log('Logout triggered');
     window.location.href = 'auth.html';
 }
+
