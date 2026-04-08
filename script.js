@@ -368,6 +368,10 @@ function createServiceCard(service) {
                 <i data-lucide="phone"></i>
                 Call
             </button>
+            ${service.type === 'hospital' ? `<button class="btn btn-appointment" onclick='bookAppointment("${service.id}", "${service.name.replace(/'/g, "\\'")}")'>
+                <i data-lucide="calendar-plus"></i>
+                Book
+            </button>` : ''}
         </div>
     `;
     
@@ -387,7 +391,7 @@ function getServiceIcon(serviceType) {
 
 // Actions
 function callEmergency() {
-    if (confirm('This will attempt to call emergency services (105). Continue?')) {
+    if (confirm('This will attempt to call emergency services (105. Continue?')) {
         window.open('tel:105');
     }
 }
@@ -408,8 +412,11 @@ function findNearby() {
     alert('Finding nearby services for: ' + (searchQuery || 'all services'));
 }
 
+function bookAppointment(serviceId, serviceName) {
+    window.location.href = `appointment.html?id=${serviceId}&name=${encodeURIComponent(serviceName)}`;
+}
+
 function logout() {
     console.log('Logout triggered');
     window.location.href = 'auth.html';
 }
-
