@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediLocate - Book Appointment</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo-icon"><i data-lucide="heart"></i></div>
+                    <div class="logo-text">
+                        <h1>MediLocate</h1>
+                        <p>Book Appointment</p>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-outline" onclick="window.location.href='reminders.html'">
+                        <i data-lucide="bell"></i>
+                        <span class="desktop-text">Reminders</span>
+                    </button>
+                    <button class="btn btn-emergency" onclick="if(confirm('Call 105?'))window.open('tel:105')">
+                        <i data-lucide="phone"></i>
+                        <span class="desktop-text">Emergency: 105</span>
+                        <span class="mobile-text">105</span>
+                    </button>
+                    <button class="btn btn-outline" onclick="window.location.href='index.html'">
+                        <i data-lucide="arrow-left"></i>
+                        <span class="desktop-text">Back</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+
+            <!-- Hospital info banner -->
+            <div class="card page-section" id="hospitalBanner" style="border-left: 4px solid var(--primary); margin-bottom:1.5rem;">
+                <div style="display:flex;align-items:center;gap:0.75rem;">
+                    <div class="service-item-icon hospital" style="width:44px;height:44px;flex-shrink:0;">
+                        <i data-lucide="building-2"></i>
+                    </div>
+                    <div>
+                        <h2 class="page-title" id="hospitalName">Hospital</h2>
+                        <p class="page-subtitle" style="margin-bottom:0;" id="hospitalSub">Select a doctor and time slot below</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 1: Choose Doctor -->
+            <div class="card page-section">
+                <h3 class="section-title"><i data-lucide="user-round"></i> Step 1 — Choose a Doctor</h3>
+                <div class="doctor-grid" id="doctorGrid"></div>
+            </div>
+
+            <!-- Step 2: Choose Date & Slot -->
+            <div class="card page-section" id="slotSection" style="display:none;">
+                <h3 class="section-title"><i data-lucide="calendar"></i> Step 2 — Choose Date & Time Slot</h3>
+                <div style="margin-bottom:1rem;">
+                    <div class="form-field" style="max-width:220px;">
+                        <label for="apptDate">Appointment Date</label>
+                        <input type="date" id="apptDate" />
+                    </div>
+                </div>
+                <p style="font-size:0.8rem;color:var(--muted-foreground);margin-bottom:0.75rem;" id="slotLabel">Available slots</p>
+                <div class="slots-grid" id="slotsGrid"></div>
+            </div>
+
+            <!-- Step 3: Patient Details -->
+            <div class="card page-section" id="formSection" style="display:none;">
+                <h3 class="section-title"><i data-lucide="clipboard-list"></i> Step 3 — Your Details</h3>
+                <div class="booking-form">
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="patientName">Full Name *</label>
+                            <input type="text" id="patientName" placeholder="e.g. Rahul Sharma" />
+                        </div>
+                        <div class="form-field">
+                            <label for="patientPhone">Phone Number *</label>
+                            <input type="tel" id="patientPhone" placeholder="e.g. 9876543210" />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="patientAge">Age</label>
+                            <input type="number" id="patientAge" placeholder="e.g. 28" min="1" max="120" />
+                        </div>
+                        <div class="form-field">
+                            <label for="patientGender">Gender</label>
+                            <select id="patientGender">
+                                <option value="">Select</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-field">
+                        <label for="patientReason">Reason for Visit</label>
+                        <textarea id="patientReason" placeholder="Briefly describe your symptoms or reason for the visit..."></textarea>
+                    </div>
+                    <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+                        <button class="btn btn-primary" onclick="submitBooking()" id="confirmBtn">
+                            <i data-lucide="calendar-check"></i>
+                            Confirm Appointment
+                        </button>
+                        <button class="btn btn-outline" onclick="resetForm()">
+                            <i data-lucide="rotate-ccw"></i>
+                            Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Success Modal -->
+    <div class="modal-overlay hidden" id="successModal">
+        <div class="modal-box">
+            <div class="modal-icon">
+                <i data-lucide="check-circle"></i>
+            </div>
+            <h3 class="modal-title">Appointment Booked!</h3>
+            <p class="modal-desc">Your appointment has been confirmed and added to your Reminders page.</p>
+            <div class="modal-detail" id="modalDetail"></div>
+            <p class="modal-desc" style="font-size:0.75rem;color:var(--muted-foreground);">You can view and manage this appointment in your Reminders.</p>
+            <div class="modal-actions">
+                <button class="btn btn-primary" onclick="window.location.href='reminders.html'">
+                    <i data-lucide="bell"></i>
+                    View Reminders
+                </button>
+                <button class="btn btn-outline" onclick="window.location.href='index.html'">
+                    <i data-lucide="home"></i>
+                    Back to Home
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <div class="toast-title" id="toast-title"></div>
+        <div class="toast-description" id="toast-description"></div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // ── Doctor data per hospital ──────────────────────────────────
+        const hospitalDoctors = {
+            h1: [
+                { id: 'd1', name: 'Dr. Priya Sharma', specialty: 'General Physician', exp: '12 yrs', rating: 4.8, color: '#3b82f6', initials: 'PS', slots: ['9:00 AM','9:30 AM','10:00 AM','10:30 AM','11:00 AM','11:30 AM','2:00 PM','2:30 PM','3:00 PM','3:30 PM','4:00 PM'] },
+                { id: 'd2', name: 'Dr. Arjun Mehta',  specialty: 'Cardiologist',       exp: '18 yrs', rating: 4.9, color: '#ef4444', initials: 'AM', slots: ['10:00 AM','10:30 AM','11:00 AM','3:00 PM','3:30 PM','4:00 PM','4:30 PM'] },
+                { id: 'd3', name: 'Dr. Sunita Rao',   specialty: 'Paediatrician',      exp: '9 yrs',  rating: 4.7, color: '#10b981', initials: 'SR', slots: ['9:00 AM','9:30 AM','10:00 AM','11:30 AM','2:00 PM','2:30 PM','3:00 PM'] },
+                { id: 'd4', name: 'Dr. Vikram Singh', specialty: 'Orthopaedic',        exp: '15 yrs', rating: 4.6, color: '#f59e0b', initials: 'VS', slots: ['11:00 AM','11:30 AM','12:00 PM','4:00 PM','4:30 PM','5:00 PM'] }
+            ],
+            h2: [
+                { id: 'd5', name: 'Dr. Neha Kapoor',  specialty: 'General Physician', exp: '8 yrs',  rating: 4.7, color: '#8b5cf6', initials: 'NK', slots: ['9:00 AM','9:30 AM','10:30 AM','11:00 AM','2:00 PM','2:30 PM','3:30 PM'] },
+                { id: 'd6', name: 'Dr. Rajesh Gupta', specialty: 'Neurologist',       exp: '20 yrs', rating: 4.9, color: '#06b6d4', initials: 'RG', slots: ['10:00 AM','10:30 AM','11:00 AM','3:00 PM','3:30 PM','4:00 PM'] },
+                { id: 'd7', name: 'Dr. Kavita Joshi', specialty: 'Gynaecologist',     exp: '14 yrs', rating: 4.8, color: '#ec4899', initials: 'KJ', slots: ['9:30 AM','10:00 AM','11:30 AM','2:30 PM','3:00 PM','4:30 PM'] }
+            ],
+            h3: [
+                { id: 'd8',  name: 'Dr. Anil Kumar',    specialty: 'General Physician', exp: '11 yrs', rating: 4.6, color: '#14b8a6', initials: 'AK', slots: ['9:00 AM','10:00 AM','11:00 AM','2:00 PM','3:00 PM','4:00 PM'] },
+                { id: 'd9',  name: 'Dr. Pooja Verma',   specialty: 'Dermatologist',     exp: '7 yrs',  rating: 4.5, color: '#f97316', initials: 'PV', slots: ['9:30 AM','10:30 AM','11:30 AM','2:30 PM','3:30 PM'] },
+                { id: 'd10', name: 'Dr. Sanjay Pandey', specialty: 'Pulmonologist',     exp: '16 yrs', rating: 4.8, color: '#6366f1', initials: 'SP', slots: ['10:00 AM','11:00 AM','3:00 PM','4:00 PM','4:30 PM'] }
+            ]
+        };
+
+        // Booked slots stored in localStorage keyed by doctorId+date
+        function bookedKey(doctorId, date) { return `booked_${doctorId}_${date}`; }
+        function getBooked(doctorId, date) {
+            return JSON.parse(localStorage.getItem(bookedKey(doctorId, date)) || '[]');
+        }
+        function addBooked(doctorId, date, slot) {
+            const arr = getBooked(doctorId, date);
+            arr.push(slot);
+            localStorage.setItem(bookedKey(doctorId, date), JSON.stringify(arr));
+        }
+
+        // ── State ─────────────────────────────────────────────────────
+        let hospitalId = '', hospitalName = '', selectedDoctor = null, selectedSlot = '';
+
+        // ── Init ──────────────────────────────────────────────────────
+        window.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            hospitalId   = params.get('id')   || 'h1';
+            hospitalName = params.get('name') || 'Hospital';
+
+            document.getElementById('hospitalName').textContent = hospitalName;
+            document.getElementById('hospitalSub').textContent  = `Book an appointment at ${hospitalName}`;
+            document.title = `Book — ${hospitalName}`;
+
+            // Set min date to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('apptDate').min = today;
+            document.getElementById('apptDate').value = today;
+            document.getElementById('apptDate').addEventListener('change', refreshSlots);
+
+            renderDoctors();
+            lucide.createIcons();
+        });
+
+        function renderDoctors() {
+            const doctors = hospitalDoctors[hospitalId] || hospitalDoctors['h1'];
+            const grid = document.getElementById('doctorGrid');
+            grid.innerHTML = '';
+            doctors.forEach(doc => {
+                const card = document.createElement('div');
+                card.className = 'doctor-card';
+                card.id = `doc-${doc.id}`;
+                card.onclick = () => selectDoctor(doc);
+                card.innerHTML = `
+                    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;">
+                        <div class="doctor-avatar" style="background:${doc.color}22;color:${doc.color};">${doc.initials}</div>
+                        <div>
+                            <div class="doctor-name">${doc.name}</div>
+                            <div class="doctor-spec">${doc.specialty}</div>
+                        </div>
+                    </div>
+                    <div class="doctor-meta">
+                        <span>&#9733; ${doc.rating}</span>
+                        <span>&#128197; ${doc.exp} exp</span>
+                        <span>&#128337; ${doc.slots.length} slots/day</span>
+                    </div>`;
+                grid.appendChild(card);
+            });
+        }
+
+        function selectDoctor(doc) {
+            selectedDoctor = doc;
+            selectedSlot = '';
+            document.querySelectorAll('.doctor-card').forEach(c => c.classList.remove('selected'));
+            document.getElementById(`doc-${doc.id}`).classList.add('selected');
+            document.getElementById('slotSection').style.display = 'block';
+            document.getElementById('formSection').style.display = 'none';
+            refreshSlots();
+            document.getElementById('slotSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            lucide.createIcons();
+        }
+
+        function refreshSlots() {
+            if (!selectedDoctor) return;
+            const date = document.getElementById('apptDate').value;
+            const booked = getBooked(selectedDoctor.id, date);
+            const grid = document.getElementById('slotsGrid');
+            const label = document.getElementById('slotLabel');
+            label.textContent = `Available slots for ${formatDateLabel(date)}`;
+            grid.innerHTML = '';
+            selectedDoctor.slots.forEach(slot => {
+                const isBooked = booked.includes(slot);
+                const btn = document.createElement('button');
+                btn.className = 'slot-btn' + (isBooked ? '' : '') + (slot === selectedSlot ? ' selected' : '');
+                btn.textContent = slot;
+                btn.disabled = isBooked;
+                if (isBooked) btn.title = 'Already booked';
+                btn.onclick = () => selectSlot(slot);
+                grid.appendChild(btn);
+            });
+        }
+
+        function formatDateLabel(dateStr) {
+            const d = new Date(dateStr + 'T00:00:00');
+            return d.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+        }
+
+        function selectSlot(slot) {
+            selectedSlot = slot;
+            document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
+            event.target.classList.add('selected');
+            document.getElementById('formSection').style.display = 'block';
+            document.getElementById('formSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            lucide.createIcons();
+        }
+
+        function submitBooking() {
+            const name   = document.getElementById('patientName').value.trim();
+            const phone  = document.getElementById('patientPhone').value.trim();
+            const age    = document.getElementById('patientAge').value.trim();
+            const gender = document.getElementById('patientGender').value;
+            const reason = document.getElementById('patientReason').value.trim();
+            const date   = document.getElementById('apptDate').value;
+
+            if (!name)          { showToast('Missing Info', 'Please enter your full name.', true); return; }
+            if (!phone)         { showToast('Missing Info', 'Please enter your phone number.', true); return; }
+            if (!selectedDoctor){ showToast('Missing Info', 'Please select a doctor.', true); return; }
+            if (!selectedSlot)  { showToast('Missing Info', 'Please select a time slot.', true); return; }
+            if (!date)          { showToast('Missing Info', 'Please select a date.', true); return; }
+
+            // Save appointment to localStorage
+            const appointment = {
+                id: 'appt_' + Date.now(),
+                hospitalId, hospitalName,
+                doctorId:    selectedDoctor.id,
+                doctorName:  selectedDoctor.name,
+                specialty:   selectedDoctor.specialty,
+                date, slot: selectedSlot,
+                patientName: name, patientPhone: phone,
+                patientAge: age, patientGender: gender, reason,
+                bookedAt: new Date().toISOString()
+            };
+
+            const existing = JSON.parse(localStorage.getItem('medilocate_appointments') || '[]');
+            existing.push(appointment);
+            localStorage.setItem('medilocate_appointments', JSON.stringify(existing));
+
+            // Mark slot as booked
+            addBooked(selectedDoctor.id, date, selectedSlot);
+
+            // Show success modal
+            const d = new Date(date + 'T00:00:00');
+            document.getElementById('modalDetail').innerHTML = `
+                <span>&#127973; <strong>${hospitalName}</strong></span>
+                <span>&#128100; <strong>${selectedDoctor.name}</strong> &mdash; ${selectedDoctor.specialty}</span>
+                <span>&#128197; <strong>${d.toLocaleDateString('en-IN', {day:'numeric',month:'long',year:'numeric'})}</strong></span>
+                <span>&#128337; <strong>${selectedSlot}</strong></span>
+                <span>&#128065; Patient: <strong>${name}</strong></span>`;
+
+            document.getElementById('successModal').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function resetForm() {
+            selectedDoctor = null;
+            selectedSlot   = '';
+            document.querySelectorAll('.doctor-card').forEach(c => c.classList.remove('selected'));
+            document.getElementById('slotSection').style.display  = 'none';
+            document.getElementById('formSection').style.display  = 'none';
+            document.getElementById('patientName').value   = '';
+            document.getElementById('patientPhone').value  = '';
+            document.getElementById('patientAge').value    = '';
+            document.getElementById('patientGender').value = '';
+            document.getElementById('patientReason').value = '';
+        }
+
+        function showToast(title, desc, isError) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-title').textContent = title;
+            document.getElementById('toast-description').textContent = desc;
+            toast.classList.toggle('error', !!isError);
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+    </script>
+</body>
+</html>
