@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediLocate - Admin Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+
+            background: rgba(0, 0, 0, 0.5);
+
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            width: 400px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body class="admin-page">
+    <div class="container admin-container">
+
+        <!-- Header -->
+        <div class="admin-header">
+            <div class="header-left">
+                <div class="admin-icon">
+                    <i data-lucide="shield"></i>
+                </div>
+                <h1 class="admin-title">Admin Dashboard</h1>
+            </div>
+
+            <div style="display:flex; gap:10px;">
+                <button class="btn btn-outline" onclick="goToHome()">
+                    <i data-lucide="home"></i>
+                    Home
+                </button>
+
+                <button class="btn btn-outline" onclick="signOut()">
+                    <i data-lucide="log-out"></i>
+                    Sign Out
+                </button>
+            </div>
+        </div>
+
+        <!-- Dashboard Card -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Welcome, Admin</h2>
+                <p class="card-description">
+                    Logged in as: <span id="adminEmail">admin@medilocate.com</span>
+                </p>
+            </div>
+
+            <div class="card-content">
+
+                <!-- System Status -->
+                <div class="status-box">
+                    <h3 class="status-title">System Status</h3>
+                    <p class="status-text" id="systemStatus">All systems operational</p>
+                </div>
+
+                <!-- Stats -->
+                <div class="grid stats-grid-admin">
+                    <div class="card stat-card">
+                        <h3 class="stat-card-title">Users</h3>
+                        <p class="stat-value stat-primary" id="userCount">0</p>
+                    </div>
+
+                    <div class="card stat-card">
+                        <h3 class="stat-card-title">Services</h3>
+                        <p class="stat-value stat-primary" id="serviceCount">0</p>
+                    </div>
+
+                    <div class="card stat-card">
+                        <h3 class="stat-card-title">Active Sessions</h3>
+                        <p class="stat-value stat-primary" id="sessionCount">1</p>
+                    </div>
+                </div>
+
+                <!-- Divider -->
+                <hr style="margin: 30px 0;">
+
+                <!-- Facility Management -->
+                <h2>Manage Facilities</h2>
+
+                <!-- Add Facility -->
+                <div class="grid" style="margin-top:20px">
+
+                    <input type="text" id="name" placeholder="Facility Name" class="input">
+                    <input type="text" id="type" placeholder="Type (Hospital/Pharmacy)" class="input">
+                    <input type="text" id="category" placeholder="Category" class="input">
+                    <input type="text" id="address" placeholder="Address" class="input">
+                    <input type="text" id="phone" placeholder="Phone" class="input">
+                    <input type="text" id="rating" placeholder="Rating" class="input">
+                    <input type="text" id="distance" placeholder="Distance" class="input">
+
+                    <button class="btn btn-primary" onclick="addFacility()">
+                        Add Facility
+                    </button>
+
+                </div>
+
+                <!-- Facility Table -->
+                <br><br>
+
+                <table style="width:100%; border-collapse: collapse">
+
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Category</th>
+                            <th>Phone</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="facilityTable"></tbody>
+
+                </table>
+
+                <!-- Edit Facility Modal -->
+                <div id="editModal" class="modal">
+
+                    <div class="modal-content">
+
+                        <h2>Edit Facility</h2>
+
+                        <input type="hidden" id="editId">
+
+                        <input type="text" id="editName" placeholder="Facility Name" class="input">
+                        <input type="text" id="editType" placeholder="Type" class="input">
+                        <input type="text" id="editCategory" placeholder="City" class="input">
+                        <input type="text" id="editAddress" placeholder="Address" class="input">
+                        <input type="text" id="editPhone" placeholder="Contact" class="input">
+                        <input type="text" id="editRating" placeholder="Rating" class="input">
+                        <input type="text" id="editDistance" placeholder="Distance" class="input">
+
+                        <div style="margin-top:15px">
+
+                            <button class="btn btn-primary" onclick="updateFacility()">
+                                Update
+                            </button>
+
+                            <button class="btn btn-outline" onclick="closeModal()">
+                                Cancel
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast"
+        style="position:fixed; top:20px; right:20px; background:black; color:white; padding:10px; display:none;">
+    </div>
+
+    <script>
+
+        // ================= BACK TO HOME PAGE ================
+        
+        function goToHome() {
+            window.location.href = "index.html";
+        }
+
+        // ================= AUTH =================
+
+        function signOut() {
+            localStorage.removeItem("token");
+            localStorage.removeItem("role");
+            window.location.href = "auth.html";
+        }
+
+        const token = localStorage.getItem("token");
+        const role = localStorage.getItem("role");
+
+        if (!token) {
+            window.location.href = "auth.html";
+        }
+
+        if (role !== "admin") {
+            window.location.href = "index.html";
+        }
+
+        // ================= TOAST =================
+
+        function showToast(message) {
+            const toast = document.getElementById("toast");
+            toast.innerText = message;
+            toast.style.display = "block";
+
+            setTimeout(() => {
+                toast.style.display = "none";
+            }, 2000);
+        }
+
+        // ================= DASHBOARD =================
+
+        async function fetchDashboardStats() {
+
+            try {
+
+                if (!token) {
+                    window.location.replace("auth.html");
+                    return;
+                }
+
+                const res = await fetch(
+                    "http://localhost:3000/api/admin/stats",
+                    {
+                        headers: {
+                            "Authorization": `Bearer ${token}`
+                        },
+                        cache: "no-store"  //prevents weird caching issues
+                    }
+                );
+
+                if (res.status === 403) {
+                    window.location.replace("/access_denied.html");
+                    return;
+                }
+
+                if (res.status === 401) {
+                    window.location.replace("auth.html");
+                    return;
+                }
+
+                if (!res.ok) throw new Error("Something went wrong");
+
+                const data = await res.json();
+
+                document.getElementById("userCount").textContent = data.totalUsers;
+                document.getElementById("serviceCount").textContent = data.totalFacilities;
+                document.getElementById("sessionCount").textContent = data.activeSessions;
+
+                document.getElementById("systemStatus").textContent =
+                    "All systems operational";
+
+            } catch (error) {
+
+                document.getElementById("systemStatus").textContent =
+                    "Error loading data";
+
+                console.error(error);
+            }
+        }
+
+        // ================= FACILITY CRUD =================
+
+        const FACILITY_API = "http://localhost:3000/api/admin/facilities";
+
+        async function loadFacilities() {
+
+            try {
+
+                const res = await fetch(FACILITY_API, {
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
+
+                const data = await res.json();
+
+                const table = document.getElementById("facilityTable");
+                table.innerHTML = "";
+
+                data.forEach(f => {
+
+                    table.innerHTML += `
+                    <tr>
+                        <td>${f.id}</td>
+                        <td>${f.name}</td>
+                        <td>${f.type}</td>
+                        <td>${f.category}</td>
+                        <td>${f.phone}</td>
+
+                        <td>
+                            <button class="btn btn-outline"
+                                onclick="openEditModal(
+                                    '${f.id}',
+                                    '${f.name}',
+                                    '${f.type}',
+                                    '${f.category}',
+                                    '${f.address}',
+                                    '${f.phone}',
+                                    '${f.rating}',
+                                    '${f.distance}'
+                                )">
+                                Edit
+                            </button>
+
+                            <button class="btn btn-primary"
+                                onclick="deleteFacility('${f.id}')">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                });
+
+            } catch (err) {
+                showToast("Failed to load facilities");
+            }
+        }
+
+        function generateFacilityId() {
+
+            const type = document.getElementById("type").value.toLowerCase();
+
+            if (type.includes("hospital")) {
+                return "h" + Math.floor(Math.random() * 1000);
+            }
+
+            if (type.includes("pharmacy")) {
+                return "p" + Math.floor(Math.random() * 1000);
+            }
+
+            return "f" + Math.floor(Math.random() * 1000);
+        }
+
+        async function addFacility() {
+
+            const facility = {
+
+                name: document.getElementById("name").value.trim(),
+                type: document.getElementById("type").value.trim(),
+                category: document.getElementById("category").value.trim(),
+                address: document.getElementById("address").value.trim(),
+                phone: document.getElementById("phone").value.trim(),
+                rating: document.getElementById("rating").value.trim(),
+                distance: document.getElementById("distance").value.trim()
+            };
+
+            console.log("Sending:", facility);
+            console.log("Sending Token:", token);
+
+            try {
+
+                const res = await fetch(FACILITY_API, {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+
+                    body: JSON.stringify(facility)
+                });
+
+                const data = await res.json();
+
+                console.log("Response:", data);
+
+                if (!res.ok) {
+                    showToast(data.message || "Failed to add facility");
+                    return;
+                }
+
+                showToast("Facility added successfully");
+
+                loadFacilities();
+
+            } catch (err) {
+
+                console.log(err);
+                showToast("Server error");
+
+            }
+        }
+
+        async function deleteFacility(id) {
+
+            if (!confirm("Delete this facility?")) return;
+
+            const res = await fetch(`${FACILITY_API}/${id}`, {
+
+                method: "DELETE",
+
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            const data = await res.json();
+
+            showToast(data.message);
+            loadFacilities();
+        }
+
+        async function updateFacility() {
+
+            const id = document.getElementById("editId").value;
+
+            const facility = {
+
+                name: editName.value,
+                type: editType.value,
+                category: editCategory.value,
+                address: editAddress.value,
+                phone: editPhone.value,
+                rating: editRating.value,
+                distance: editDistance.value
+            };
+
+            const res = await fetch(
+                `${FACILITY_API}/${id}`,
+                {
+                    method: "PUT",
+
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+
+                    body: JSON.stringify(facility)
+                }
+            );
+
+            const data = await res.json();
+
+            showToast(data.message);
+
+            closeModal();
+
+            loadFacilities();
+        }
+
+        function openEditModal(
+            id,
+            name,
+            type,
+            category,
+            address,
+            phone,
+            rating,
+            distance
+        ) {
+
+            document.getElementById("editModal").style.display = "flex";
+
+            document.getElementById("editId").value = id;
+            document.getElementById("editName").value = name;
+            document.getElementById("editType").value = type;
+            document.getElementById("editCategory").value = category;
+            document.getElementById("editAddress").value = address;
+            document.getElementById("editPhone").value = phone;
+            document.getElementById("editRating").value = rating;
+            document.getElementById("editDistance").value = distance;
+        }
+
+        function closeModal() {
+            document.getElementById("editModal").style.display = "none";
+        }
+
+        // ================= INIT =================
+
+        fetchDashboardStats();
+        loadFacilities();
+
+        setInterval(fetchDashboardStats, 5000);
+
+        lucide.createIcons();
+
+    </script>
+
+</body>
+
+</html>
