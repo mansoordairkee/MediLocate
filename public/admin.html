@@ -228,7 +228,7 @@
                 }
 
                 const res = await fetch(
-                    "http://localhost:3000/api/admin/stats",
+                    "https://medilocate-pjfg.onrender.com/api/admin/stats",
                     {
                         headers: {
                             "Authorization": `Bearer ${token}`
@@ -269,7 +269,7 @@
 
         // ================= FACILITY CRUD =================
 
-        const FACILITY_API = "http://localhost:3000/api/admin/facilities";
+        const FACILITY_API = "https://medilocate-pjfg.onrender.com/api/admin/facilities";
 
         async function loadFacilities() {
 
