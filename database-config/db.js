@@ -1,7 +1,7 @@
 const mysql = require("mysql2/promise");
 
 const db = mysql.createPool({
-  host: "localhost",
+  host: "https://medilocate-pjfg.onrender.com",
   user: "root",
   password: "mediloc@123",
   database: "mediloc",
