@@ -1,50 +1,204 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const db = require('../database-config/db');
-const jwt = require('jsonwebtoken');
+const db = require("../database-config/db");
+const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
-// Verifying Admin Middleware
+
+// ================= VERIFY ADMIN =================
 function verifyAdmin(req, res, next) {
-  const authHeader = req.header('Authorization');
+
+  const authHeader = req.header("Authorization");
+
   if (!authHeader) {
-    return res.status(401).json({ error: 'No token provided' });
+    return res.status(401).json({
+      error: "No token provided"
+    });
   }
 
   const token = authHeader.split(" ")[1];
-  jwt.verify(token, process.env.JWT_SECRET, (err, admin) => {
-    if (err) {
-      return res.status(403).json({ error: 'Invalid token' });
+
+  try {
+
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET
+    );
+
+    if (decoded.role !== "admin") {
+      return res.status(403).json({
+        error: "Admin access only"
+      });
     }
-    req.admin = admin;
+
+    req.admin = decoded;
     next();
-  });
+
+  } catch (error) {
+
+    return res.status(403).json({
+      error: "Invalid token"
+    });
+
+  }
 }
 
-// Total number of users
-router.get("/facilities/count", varifyAdmin, (req, res) => {
-  db.query("SELECT COUNT(*) AS total FROM users", (err, result) => {
-    if (err) {
-      return res.status(500).json({ error: err.message });
-    }
-    res.json({ totalUsers: result[0].totalUsers });
-  });
+
+// ================= DASHBOARD STATS =================
+router.get("/stats", verifyAdmin, async (req, res) => {
+  try {
+
+    const [userResult] = await db.query(
+      "SELECT COUNT(*) AS totalUsers FROM users"
+    );
+
+    const [facilityResult] = await db.query(
+      "SELECT COUNT(*) AS totalFacilities FROM facilities1"
+    );
+
+    res.json({
+      totalUsers: userResult[0].totalUsers,
+      totalFacilities: facilityResult[0].totalFacilities,
+      activeSessions: 1
+    });
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-// Total number of facilities
-router.get("/facilities/count", verifyAdmin, (req, res) => {
-  db.query("SELECT COUNT(*) AS total FROM facilities", (err, result) => {
-    if (err) {
-      return res.status(500).json({ error: err.message });
+
+// ================= ADD FACILITY =================
+router.post("/facilities", verifyAdmin, async (req, res) => {
+  try {
+
+    const {
+      name,
+      type,
+      category,
+      address,
+      phone,
+      rating,
+      distance
+    } = req.body;
+
+    if (
+      !name ||
+      !type ||
+      !category ||
+      !address ||
+      !phone ||
+      !rating ||
+      !distance
+    ) {
+      return res.status(400).json({
+        error: "All fields required"
+      });
     }
-    res.json({ totalFacilities: result[0].totalFacilities });
-  });
+
+    // Generate ID
+    let prefix = "f";
+
+    if (type.toLowerCase().includes("hospital")) prefix = "h";
+    if (type.toLowerCase().includes("pharmacy")) prefix = "p";
+    if (type.toLowerCase().includes("blood")) prefix = "b";
+
+    const [rows] = await db.query(
+      "SELECT COUNT(*) as count FROM facilities1 WHERE id LIKE ?",
+      [`${prefix}%`]
+    );
+
+    const newId = prefix + (rows[0].count + 1);
+
+    await db.query(
+      `INSERT INTO facilities1
+      (id, name, type, category, address, phone, rating, distance)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [newId, name, type, category, address, phone, rating, distance]
+    );
+
+    res.json({
+      message: "Facility added successfully",
+      id: newId
+    });
+
+  } catch (err) {
+
+    console.log(err);
+
+    res.status(500).json({
+      error: err.message
+    });
+
+  }
 });
 
-// Active Sessions
-let activeSessions = 1;0; // This should ideally be tracked in a more persistent way
-router.get("/sessions/count", verifyAdmin, (req, res) => {
-  res.json({ activeSessions });
+
+// ================= GET FACILITIES =================
+router.get("/facilities", verifyAdmin, async (req, res) => {
+  try {
+
+    const [result] = await db.query("SELECT * FROM facilities1");
+    res.json(result);
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
+
+
+// ================= UPDATE FACILITY =================
+router.put("/facilities/:id", verifyAdmin, async (req, res) => {
+  try {
+
+    const { id } = req.params;
+
+    const {
+      name,
+      type,
+      category,
+      address,
+      phone,
+      rating,
+      distance
+    } = req.body;
+
+    await db.query(
+      `UPDATE facilities1
+       SET name=?, type=?, category=?, address=?, phone=?, rating=?, distance=?
+       WHERE id=?`,
+      [name, type, category, address, phone, rating, distance, id]
+    );
+
+    res.json({
+      message: "Facility updated successfully"
+    });
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+// ================= DELETE FACILITY =================
+router.delete("/facilities/:id", verifyAdmin, async (req, res) => {
+  try {
+
+    const { id } = req.params;
+
+    await db.query(
+      "DELETE FROM facilities1 WHERE id=?",
+      [id]
+    );
+
+    res.json({
+      message: "Facility deleted successfully"
+    });
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 module.exports = router;

@@ -1,70 +1,172 @@
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const User = require('../models/user');
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const db = require("../database-config/db");
+require("dotenv").config();
 
-// User Signup
+
+// ================= USER SIGNUP =================
+
 exports.signUp = async (req, res) => {
   try {
+
     const { name, email, password } = req.body;
+
     if (!name || !email || !password) {
-      return res.status(400).json({ error: 'All fields are required' });
-    }
-    
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ error: 'User already exists' });
+      return res.status(400).json({
+        error: "All fields are required"
+      });
     }
 
+    // Check if user exists
+    const [existingUsers] = await db.query(
+      "SELECT * FROM users WHERE email = ?",
+      [email]
+    );
+
+    if (existingUsers.length > 0) {
+      return res.status(400).json({
+        error: "User already exists"
+      });
+    }
+
+    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = await User.create({ name, email, password: hashedPassword });
 
-    res.status(201).json({ message: 'Signup Succesful', user: newUser });
-  }
-    catch (error) {
-    res.status(500).json({ error: 'Internal server error' });
+    // Insert user
+    await db.query(
+      "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
+      [name, email, hashedPassword]
+    );
+
+    res.status(201).json({
+      message: "Signup successful"
+    });
+
+  } catch (error) {
+
+    console.log(error);
+
+    res.status(500).json({
+      error: "Internal server error"
+    });
+
   }
 };
 
-// User Login
+
+
+// ================= USER LOGIN =================
+
 exports.login = async (req, res) => {
   try {
+
     const { email, password } = req.body;
-    const user = await User.findOne({email});
-    if (!user) {
-      return res.status(400).json({ error: 'Invalid email or password' });
+
+    const [result] = await db.query(
+      "SELECT * FROM users WHERE email = ?",
+      [email]
+    );
+
+    if (result.length === 0) {
+      return res.status(400).json({
+        error: "User not found"
+      });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    const user = result[0];
+
+    const isMatch = await bcrypt.compare(
+      password,
+      user.password
+    );
+
     if (!isMatch) {
-      return res.status(400).json({ error: 'Invalid email or password' });
-    }
-
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
-    res.json({ message: 'Login Successful', token });
-  } catch (error) {
-    res.status(500).json({ error: 'Internal server error' });
-  } 
-};
-
-//Admin Login
-exports.adminLogin = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    const adminEmail = process.env.ADMIN_EMAIL;
-    const adminPassword = process.env.ADMIN_PASSWORD;
-
-    if (email !== adminEmail || password !== adminPassword) {
-      return res.status(400).json({ error: 'Invalid admin credentials' });
+      return res.status(400).json({
+        error: "Invalid password"
+      });
     }
 
     const token = jwt.sign(
-      {role: 'admin', email: adminEmail},
+      {
+        role: "user",
+        id: user.id,
+        email: user.email
+      },
       process.env.JWT_SECRET,
-      { expiresIn: '1d' }
-    );  
+      { expiresIn: "1d" }
+    );
 
-    res.json({ message: 'Admin Login Successful', token });
+    res.json({
+      message: "Login successful",
+      token
+    });
+
   } catch (error) {
-    res.status(500).json({ error: 'Internal server error' });
+
+    console.log(error);
+
+    res.status(500).json({
+      error: "Internal server error"
+    });
+
+  }
+};
+
+
+
+// ================= ADMIN LOGIN =================
+
+exports.adminLogin = async (req, res) => {
+  try {
+
+    const { email, password } = req.body;
+
+    const [result] = await db.query(
+      "SELECT * FROM admins WHERE email = ?",
+      [email]
+    );
+
+    if (result.length === 0) {
+      return res.status(400).json({
+        error: "Admin not found"
+      });
+    }
+
+    const admin = result[0];
+
+    const isMatch = await bcrypt.compare(
+      password,
+      admin.password
+    );
+
+    if (!isMatch) {
+      return res.status(400).json({
+        error: "Invalid password"
+      });
+    }
+
+    const token = jwt.sign(
+      {
+        role: "admin",
+        id: admin.id,
+        email: admin.email
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+
+    res.json({
+      message: "Admin login successful",
+      token
+    });
+
+  } catch (error) {
+
+    console.log(error);
+
+    res.status(500).json({
+      error: "Internal server error"
+    });
+
   }
 };
