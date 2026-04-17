@@ -1,20 +1,40 @@
+require("dotenv").config();
+
 const jwt = require("jsonwebtoken");
-const JWT_SECRET = "your_secret_key";
 
 function authMiddleware(req, res, next) {
+
   let token = req.header("Authorization");
-  if (!token) return res.status(401).send({ error: "No token provided" });
+
+  if (!token) {
+    return res.status(401).json({
+      error: "No token provided"
+    });
+  }
 
   if (token.startsWith("Bearer ")) {
     token = token.slice(7).trim();
   }
 
   try {
-    const verified = jwt.verify(token, JWT_SECRET);
+
+    const verified = jwt.verify(
+      token,
+      process.env.JWT_SECRET   
+    );
+
     req.user = verified;
+
     next();
-  } catch {
-    res.status(400).send({ error: "Invalid token" });
+
+  } catch (err) {
+
+    console.log("JWT ERROR:", err.message);
+
+    return res.status(403).json({
+      error: "Invalid token"
+    });
+
   }
 }
 
