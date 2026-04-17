@@ -1,5 +1,5 @@
 # 🏥 MediLocate
-🌐 [Visit Live Website](https://mansoordairkee.github.io/MediLocate)
+🌐 [Visit Live Website](https://medilocate-pjfg.onrender.com)
 
 **MediLocate** is a web-based healthcare locator platform designed to help users quickly find nearby **hospitals, pharmacies, laboratories, blood banks, and veterinary services** in **Jaipur**.  
 It uses **Google Maps integration** to display live locations and directions based on the user’s current location.
