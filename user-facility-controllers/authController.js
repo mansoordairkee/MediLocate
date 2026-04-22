@@ -112,7 +112,59 @@ exports.login = async (req, res) => {
   }
 };
 
+// ================= ADMIN SIGNUP =================
 
+exports.adminSignup = async (req, res) => {
+  try {
+    const { name, email, password, adminKey } = req.body;
+
+    //  Check admin secret key
+    if (adminKey !== process.env.ADMIN_SECRET) {
+      return res.status(403).json({
+        error: "Unauthorized: Invalid admin key"
+      });
+    }
+
+    //  Validate input
+    if (!name || !email || !password) {
+      return res.status(400).json({
+        error: "All fields are required"
+      });
+    }
+
+    //  Check if admin already exists
+    const [existingAdmin] = await db.query(
+      "SELECT * FROM admins WHERE email = ?",
+      [email]
+    );
+
+    if (existingAdmin.length > 0) {
+      return res.status(400).json({
+        error: "Admin already exists"
+      });
+    }
+
+    //  Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    //  Insert admin into DB
+    await db.query(
+      "INSERT INTO admins (name, email, password) VALUES (?, ?, ?)",
+      [name, email, hashedPassword]
+    );
+
+    res.status(201).json({
+      message: "Admin signup successful"
+    });
+
+  } catch (error) {
+    console.error("Admin Signup Error:", error);
+
+    res.status(500).json({
+      error: "Internal server error"
+    });
+  }
+};
 
 // ================= ADMIN LOGIN =================
 
