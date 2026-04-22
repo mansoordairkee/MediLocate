@@ -155,6 +155,36 @@
             }
         }
 
+        // Admin Signup Function
+        async function adminSignup(name, email, password, adminKey) {
+            try {
+                const response = await fetch(`${ADMIN_API}/signup`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        name,
+                        email,
+                        password,
+                        adminKey
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    alert(data.error);
+                } else {
+                    alert("Admin created successfully!");
+                }
+
+            } catch (error) {
+                console.error(error);
+                alert("Error creating admin");
+            }
+        }
+
         async function handleSignIn(event) {
 
             event.preventDefault();
