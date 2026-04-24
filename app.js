@@ -23,13 +23,9 @@ app.use("/api/users", userRoutes);
 app.use("/api/facilities", facilityRoutes);
 app.use("/api/admin", adminRoutes)
 
-app.get("/", (req, res) => {
-  res.send("Welcome to MediLocate Backend API");
-});
-
 
 //START SERVER 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on https://medilocate-pjfg.onrender.com`);
 });
