@@ -28,7 +28,7 @@
                         <span class="desktop-text">Emergency: 105</span>
                         <span class="mobile-text">105</span>
                     </button>
-                    <button class="btn btn-outline" onclick="window.location.href='index.html'">
+                    <button class="btn btn-outline" onclick="window.location.href='main.html'">
                         <i data-lucide="arrow-left"></i>
                         <span class="desktop-text">Back to Map</span>
                     </button>
@@ -50,7 +50,7 @@
                     <h2 class="page-title">Your Reminders</h2>
                     <p class="page-subtitle" style="margin-bottom:0;">Upcoming appointments and monthly health checkups</p>
                 </div>
-                <button class="btn btn-primary" onclick="window.location.href='index.html'">
+                <button class="btn btn-primary" onclick="window.location.href='main.html'">
                     <i data-lucide="calendar-plus"></i>
                     Book New Appointment
                 </button>
@@ -210,7 +210,7 @@
                     <div class="empty-state">
                         <i data-lucide="calendar-x" style="width:48px;height:48px;display:block;margin:0 auto 1rem;opacity:0.25;"></i>
                         <p>${emptyMsg}</p>
-                        ${containerId === 'appointmentsList' ? '<p style="margin-top:0.5rem;"><a href="index.html" style="color:var(--primary);">Find a hospital and book one</a></p>' : ''}
+                        ${containerId === 'appointmentsList' ? '<p style="margin-top:0.5rem;"><a href="main.html" style="color:var(--primary);">Find a hospital and book one</a></p>' : ''}
                     </div>`;
                 lucide.createIcons();
                 return;
