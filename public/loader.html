@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MediLocate</title>
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: #0f172a;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      font-family: Arial, sans-serif;
+    }
+
+    .logo {
+      font-size: 34px;
+      font-weight: bold;
+      color: #38bdf8;
+      margin-bottom: 20px;
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid rgba(255,255,255,0.2);
+      border-top: 5px solid #38bdf8;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .text {
+      margin-top: 15px;
+      font-size: 14px;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="logo">MediLocate</div>
+  <div class="spinner"></div>
+  <div class="text" id="statusText">Starting services...</div>
+
+  <script>
+    const BACKEND_URL = "https://medilocate-pjfg.onrender.com";
+
+    async function waitForServer() {
+      try {
+        const res = await fetch(BACKEND_URL);
+
+        if (res.ok) {
+          const token = localStorage.getItem("token");
+
+          if (token) {
+            window.location.href = "index.html";
+          } else {
+            window.location.href = "auth.html";
+          }
+        } else {
+          throw new Error();
+        }
+
+      } catch {
+        setTimeout(waitForServer, 2000);
+      }
+    }
+
+    // dynamic dots animation
+    let dots = 0;
+    setInterval(() => {
+      dots = (dots + 1) % 4;
+      document.getElementById("statusText").innerText =
+        "Starting services" + ".".repeat(dots);
+    }, 500);
+
+    waitForServer();
+  </script>
+
+</body>
+</html>
