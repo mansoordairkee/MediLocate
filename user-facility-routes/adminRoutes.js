@@ -4,6 +4,24 @@ const db = require("../database-config/db");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
+// ================= CALCULATING DISTANCE ================
+function calculateDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371; // km
+
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * Math.PI / 180) *
+    Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLon / 2) *
+    Math.sin(dLon / 2);
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  return R * c;
+}
 
 // ================= VERIFY ADMIN =================
 function verifyAdmin(req, res, next) {
@@ -137,9 +155,37 @@ router.post("/facilities", verifyAdmin, async (req, res) => {
 // ================= GET FACILITIES =================
 router.get("/facilities", verifyAdmin, async (req, res) => {
   try {
+    const { lat, lng } = req.query;
 
     const [result] = await db.query("SELECT * FROM facilities1");
-    res.json(result);
+
+    let facilities = result;
+
+    // 🔥 If location provided → calculate distance
+    if (lat && lng) {
+      facilities = facilities.map(f => {
+        if (f.latitude && f.longitude) {
+          const distance = calculateDistance(
+            parseFloat(lat),
+            parseFloat(lng),
+            parseFloat(f.latitude),
+            parseFloat(f.longitude)
+          );
+
+          return { ...f, distance };
+        }
+        return { ...f, distance: null };
+      });
+
+      // 🔥 Sort by nearest
+      facilities.sort((a, b) => {
+        if (a.distance === null) return 1;
+        if (b.distance === null) return -1;
+        return a.distance - b.distance;
+      });
+    }
+
+    res.json(facilities);
 
   } catch (err) {
     res.status(500).json({ error: err.message });
