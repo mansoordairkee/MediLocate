@@ -180,7 +180,7 @@
     <script>
 
         // ================= BACK TO HOME PAGE ================
-        
+
         function goToHome() {
             window.location.href = "main.html";
         }
@@ -214,6 +214,26 @@
             setTimeout(() => {
                 toast.style.display = "none";
             }, 2000);
+        }
+
+        // ================= USER LOCATION ================
+
+        async function getUserLocation() {
+            return new Promise((resolve, reject) => {
+                if (!navigator.geolocation) {
+                    reject("Geolocation not supported");
+                }
+
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        resolve({
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude
+                        });
+                    },
+                    (error) => reject(error)
+                );
+            });
         }
 
         // ================= DASHBOARD =================
@@ -275,7 +295,17 @@
 
             try {
 
-                const res = await fetch(FACILITY_API, {
+                let url = FACILITY_API;
+
+                try {
+                    const location = await getUserLocation();
+
+                    url += `?lat=${location.lat}&lng=${location.lng}`;
+                } catch (err) {
+                    console.log("Location not available, loading without distance");
+                }
+
+                const res = await fetch(url, {
                     headers: {
                         "Authorization": `Bearer ${token}`
                     }
@@ -295,6 +325,9 @@
                         <td>${f.type}</td>
                         <td>${f.category}</td>
                         <td>${f.phone}</td>
+                        <td>
+                            ${f.distance ? f.distance.toFixed(2) + " km" : "N/A"}
+                        <td>
 
                         <td>
                             <button class="btn btn-outline"
@@ -306,7 +339,7 @@
                                     '${f.address}',
                                     '${f.phone}',
                                     '${f.rating}',
-                                    '${f.distance}'
+                                    '${f.distance || ""}'
                                 )">
                                 Edit
                             </button>
