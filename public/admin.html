@@ -107,7 +107,8 @@
                     <input type="text" id="address" placeholder="Address" class="input">
                     <input type="text" id="phone" placeholder="Phone" class="input">
                     <input type="text" id="rating" placeholder="Rating" class="input">
-                    <input type="text" id="distance" placeholder="Distance" class="input">
+                    <input type="text" id="latitude" placeholder="Latitude" class="input">
+                    <input type="text" id="longitude" placeholder="Longitude" class="input">    
 
                     <button class="btn btn-primary" onclick="addFacility()">
                         Add Facility
@@ -127,6 +128,7 @@
                             <th>Type</th>
                             <th>Category</th>
                             <th>Phone</th>
+                            <th>Distance</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -150,7 +152,8 @@
                         <input type="text" id="editAddress" placeholder="Address" class="input">
                         <input type="text" id="editPhone" placeholder="Contact" class="input">
                         <input type="text" id="editRating" placeholder="Rating" class="input">
-                        <input type="text" id="editDistance" placeholder="Distance" class="input">
+                        <input type="text" id="editLatitude" placeholder="Latitude" class="input">
+                        <input type="text" id="editLongitude" placeholder="Longitude" class="input">
 
                         <div style="margin-top:15px">
 
@@ -327,7 +330,7 @@
                         <td>${f.phone}</td>
                         <td>
                             ${f.distance ? f.distance.toFixed(2) + " km" : "N/A"}
-                        <td>
+                        </td>
 
                         <td>
                             <button class="btn btn-outline"
@@ -339,7 +342,8 @@
                                     '${f.address}',
                                     '${f.phone}',
                                     '${f.rating}',
-                                    '${f.distance || ""}'
+                                    '${f.latitude}',
+                                    '${f.longitude}'
                                 )">
                                 Edit
                             </button>
@@ -383,7 +387,8 @@
                 address: document.getElementById("address").value.trim(),
                 phone: document.getElementById("phone").value.trim(),
                 rating: document.getElementById("rating").value.trim(),
-                distance: document.getElementById("distance").value.trim()
+                latitude: document.getElementById("latitude").value.trim(),
+                longitude: document.getElementById("longitude").value.trim()
             };
 
             console.log("Sending:", facility);
@@ -455,7 +460,8 @@
                 address: editAddress.value,
                 phone: editPhone.value,
                 rating: editRating.value,
-                distance: editDistance.value
+                latitude: editLatitude.value,
+                longitude: editLongitude.value
             };
 
             const res = await fetch(
@@ -489,7 +495,8 @@
             address,
             phone,
             rating,
-            distance
+            latitude,
+            longitude
         ) {
 
             document.getElementById("editModal").style.display = "flex";
@@ -501,7 +508,8 @@
             document.getElementById("editAddress").value = address;
             document.getElementById("editPhone").value = phone;
             document.getElementById("editRating").value = rating;
-            document.getElementById("editDistance").value = distance;
+            document.getElementById("editLatitude").value = latitude;
+            document.getElementById("editLongitude").value = longitude;
         }
 
         function closeModal() {
